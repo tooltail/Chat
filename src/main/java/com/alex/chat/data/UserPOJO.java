@@ -21,18 +21,18 @@ public class UserPOJO {
 
     static final String DB__TABLE                  = "user";
 
-    static final String DB__ID                     = "id";
+    public static final String DB__ID              = "id";
     static final String DB__USERNAME               = "username";
     static final String DB__PASSWORD               = "password";
-    static final String DB__MESSAGES               = "messages";
+    static final String DB__MESSAGES__ID           = "messages_id";
 
+    static final String JSON__ID                   = DB__ID;
     static final String JSON__USERNAME             = DB__USERNAME;
     static final String JSON__PASSWORD             = DB__PASSWORD;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = DB__ID, unique = true, nullable = false)
-    @Nullable private volatile Long id;
+    @Nullable private volatile String id;
 
     @Column(name = DB__USERNAME, nullable = false)
     @Nullable private volatile String username;
@@ -40,27 +40,30 @@ public class UserPOJO {
     @Column(name = DB__PASSWORD, nullable = false)
     @Nullable private volatile String password;
 
-    @OneToMany(targetEntity = MessagePOJO.class, mappedBy = MessagePOJO.DB__AN__ID, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = DB__MESSAGES, nullable = false)
+    @OneToMany(targetEntity = MessagePOJO.class, mappedBy = MessagePOJO.DB__USERNAME__ID, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = DB__MESSAGES__ID, nullable = false)
     @Nullable private volatile List<MessagePOJO> messages;
 
     protected UserPOJO() {}
 
     @JsonCreator
     public UserPOJO(
+            @JsonProperty(JSON__ID) @Nonnull String id,
             @JsonProperty(JSON__USERNAME) @Nonnull String username,
             @JsonProperty(JSON__PASSWORD) @Nonnull String password) {
 
+        assert id != null : "<id> is null";
         assert username != null : "<username> is null";
         assert password != null : "<password> is null";
 
+        this.id = id;
         this.username = username;
         this.password = password;
         }
 
-        @JsonIgnore
-        protected @Nullable Long id() {
-            return id;
+        @JsonProperty(JSON__ID)
+        protected @Nonnull String id() {
+            return Objects.requireNonNull(id);
         }
 
         @JsonProperty(JSON__USERNAME)
@@ -77,33 +80,10 @@ public class UserPOJO {
         public @Nonnull String toString() {
 
             return new ToStringCreator(this)
+                    .append(JSON__ID, id())
                     .append(JSON__USERNAME, username())
                     .append(JSON__PASSWORD, password())
                     .toString();
         }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

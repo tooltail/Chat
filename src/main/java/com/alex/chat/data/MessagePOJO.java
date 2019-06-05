@@ -22,8 +22,7 @@ public class MessagePOJO {
 
     static final String DB__ID                           = "id";
     static final String DB__MESSAGE__CONTENT             = "message_content";
-    static final String DB__USERNAME__ID                 = "username_id";
-    public static final String DB__AN__ID                = "user";
+    public static final String DB__USERNAME__ID          = "username_id";
 
     static final String JSON__MESSAGE__CONTENT           = DB__MESSAGE__CONTENT;
     static final String JSON__ID                         = DB__ID;
