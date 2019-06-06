@@ -12,11 +12,13 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+
+// Регистрация пользователя происходит независимо от сообщений
 @Immutable
 @Entity
 @Table(name = UserPOJO.DB__TABLE,
         indexes = { @Index(columnList = UserPOJO.DB__USERNAME),
-                  @Index(columnList = UserPOJO.DB__PASSWORD) })
+                    @Index(columnList = UserPOJO.DB__PASSWORD) })
 public class UserPOJO {
 
     static final String DB__TABLE                  = "user";
@@ -24,7 +26,7 @@ public class UserPOJO {
     public static final String DB__ID              = "id";
     static final String DB__USERNAME               = "username";
     static final String DB__PASSWORD               = "password";
-    static final String DB__MESSAGES__ID           = "messages_id";
+    //static final String DB__MESSAGES__ID           = "messages_id";
 
     static final String JSON__ID                   = DB__ID;
     static final String JSON__USERNAME             = DB__USERNAME;
@@ -40,9 +42,11 @@ public class UserPOJO {
     @Column(name = DB__PASSWORD, nullable = false)
     @Nullable private volatile String password;
 
-    @OneToMany(targetEntity = MessagePOJO.class, mappedBy = MessagePOJO.DB__USERNAME__ID, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = DB__MESSAGES__ID, nullable = false)
-    @Nullable private volatile List<MessagePOJO> messages;
+    /*
+    @OneToMany(targetEntity = UserMessagePOJO.class, mappedBy = UserMessagePOJO.DB__USERNAME__ID, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = DB__MESSAGES__ID, nullable = true)
+    @Nullable private volatile List<UserMessagePOJO> messages;
+    */
 
     protected UserPOJO() {}
 
@@ -52,7 +56,7 @@ public class UserPOJO {
             @JsonProperty(JSON__USERNAME) @Nonnull String username,
             @JsonProperty(JSON__PASSWORD) @Nonnull String password) {
 
-        assert id != null : "<id> is null";
+        assert id != null       : "<id> is null";
         assert username != null : "<username> is null";
         assert password != null : "<password> is null";
 
@@ -75,7 +79,12 @@ public class UserPOJO {
         public @Nonnull String password() {
             return Objects.requireNonNull(password);
         }
-
+        /**
+        @JsonIgnore
+        public @Nullable List<UserMessagePOJO> messages() {
+            return messages;
+        }
+        */
         @Override
         public @Nonnull String toString() {
 

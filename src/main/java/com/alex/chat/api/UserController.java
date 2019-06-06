@@ -2,7 +2,7 @@ package com.alex.chat.api;
 
 import com.alex.chat.dao.UserDAO;
 import com.alex.chat.data.UserPOJO;
-import com.alex.chat.service.UserSevice;
+import com.alex.chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +17,11 @@ import java.util.Map;
 public class UserController {
 
     @Nonnull private final UserDAO userDAO;
-    @Nonnull private final UserSevice userSevice;
+    @Nonnull private final UserService userSevice;
 
     public UserController(
             @Nullable @Autowired UserDAO userDAO,
-            @Nullable @Autowired UserSevice userSevice) {
+            @Nullable @Autowired UserService userSevice) {
 
         this.userDAO = userDAO;
         this.userSevice = userSevice;

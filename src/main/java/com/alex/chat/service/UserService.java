@@ -6,9 +6,14 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Service
-public class UserSevice {
+public class UserService {
+
+    public static String USER__ID;
 
     public @Nonnull String nextUserId() {
-        return UUID.randomUUID().toString();
+
+        this.USER__ID = UUID.randomUUID().toString();
+
+        return USER__ID;
     }
 }
