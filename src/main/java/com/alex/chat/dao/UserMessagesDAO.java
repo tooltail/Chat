@@ -1,8 +1,9 @@
 package com.alex.chat.dao;
 
-import com.alex.chat.dao.repository.UserMessagesRepository;
+
+import com.alex.chat.dao.repository.UserMessageRepository;
+import com.alex.chat.data.UserConversationPOJO;
 import com.alex.chat.data.UserMessagePOJO;
-import com.alex.chat.data.UserMessagesPOJO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
+/*
 @Repository
 public class UserMessagesDAO {
 
@@ -22,10 +23,10 @@ public class UserMessagesDAO {
 
     private static final String MSG_ADD                  = "ADD {}";
 
-    @Nonnull private final UserMessagesRepository userMessagesRepository;
+    @Nonnull private final UserMessageRepository userMessagesRepository;
 
     public UserMessagesDAO(
-            @Autowired @Nullable UserMessagesRepository userMessagesRepository) {
+            @Autowired @Nullable UserMessageRepository userMessagesRepository) {
 
         this.userMessagesRepository = userMessagesRepository;
     }
@@ -36,17 +37,17 @@ public class UserMessagesDAO {
             String receiver_id,
             String message_content) {
 
-        List<UserMessagePOJO> messages = new LinkedList<>();
-        messages.add(new UserMessagePOJO(username_id, message_content));
+        List<UserConversationPOJO> messages = new LinkedList<>();
+        messages.add(new UserConversationPOJO(username_id, message_content));
 
-        UserMessagesPOJO userMessages = new UserMessagesPOJO(username_id, messages);
+        UserMessagePOJO userMessages = new UserMessagePOJO(username_id, messages);
         userMessagesRepository.save(userMessages);
 
         LOG.info(
                 MSG_ADD,
                 userMessages);
 
-        userMessages = new UserMessagesPOJO(receiver_id, messages);
+        userMessages = new UserMessagePOJO(receiver_id, messages);
         userMessagesRepository.save(userMessages);
 
         LOG.info(
@@ -58,3 +59,4 @@ public class UserMessagesDAO {
 
 
 }
+*/

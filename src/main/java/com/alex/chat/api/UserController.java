@@ -43,7 +43,7 @@ public class UserController {
         assert username != null : "<username> is null";
         assert password != null : "<password> is null";
 
-        String userId = userSevice.nextUserId();
+        String userId = userSevice.nextId();
 
         userDAO.addUser(userId, username, password);
 

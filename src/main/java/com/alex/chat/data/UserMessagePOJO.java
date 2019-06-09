@@ -1,84 +1,111 @@
 package com.alex.chat.data;
 
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.lang.NonNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+
 
 @Immutable
 @Entity
 @Table(name = UserMessagePOJO.DB__TABLE)
 public class UserMessagePOJO {
 
-    // table name
-    static final String DB__TABLE                       = "user_message";
+    static final String DB__TABLE                        = "user_message";
 
-    // field names
-    static final String DB__MESSAGE__ID                 = "id";
-    static final String DB__USERNAME__ID                = "username_id";
-    static final String DB__USERNAME__MESSAGE_LIST      = "username_message_list";
-    static final String DB__OWNER__ID                   = "owner_id";
-    static final String DB__OWNER                       = "owner";
+    static final String DB__MESSAGE__ID                  = "message_id";
+    public static final String DB__USER__ID              = "user_id";
+    static final String DB__CONVERSATION                 = "conversation";
 
-    static final String JSON__USERNAME__ID              = DB__USERNAME__ID;
-    static final String JSON__USERNAME__MESSAGE_LIST    = DB__USERNAME__MESSAGE_LIST;
+    static final String JSON__MESSAGE__ID                = DB__MESSAGE__ID;
+    static final String JSON__CONVERSATION               = DB__CONVERSATION;
 
-
-    //automatic increment
+    // create with UUID creator
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = DB__MESSAGE__ID, nullable = false)
-    @Nullable private volatile Long message_id;
+    @Nullable private volatile String message_id;
 
-    // id several username(message history between several users)
-    @Column(name = DB__USERNAME__ID, nullable = false)
-    @Nullable private volatile String username_id;
 
-    // message content(massive of values(String))
-    @Column(name = DB__USERNAME__MESSAGE_LIST, nullable = false)
-    @Nullable private volatile String message_content;
+    @ManyToOne
+    @JoinColumn(name = DB__USER__ID)
+    @Nullable private volatile UserPOJO user_id;
 
-    // id one username(owner)
-    @ManyToOne(optional = false)
-    @JoinColumn(name = DB__OWNER__ID, nullable = false)
-    @Nullable private volatile UserMessagesPOJO owner;
+
+    // no need to create column
+    @OneToMany(targetEntity = UserConversationPOJO.class, mappedBy = UserConversationPOJO.DB__MESSAGE__ID)
+    // maybe null
+    //@Column(name = DB__CONVERSATION)
+    @Nullable private volatile List<UserConversationPOJO> conversation;
 
     protected UserMessagePOJO() {}
 
     @JsonCreator
     public UserMessagePOJO(
-            @JsonProperty(JSON__USERNAME__ID) @Nonnull String username_id,
-            @JsonProperty(JSON__USERNAME__MESSAGE_LIST) @NonNull String message_content) {
+            @JsonProperty(JSON__MESSAGE__ID) @Nonnull String message_id,
+            @JsonProperty(JSON__CONVERSATION) @Nullable List<UserConversationPOJO> conversation) {
 
-        assert username_id != null : "<username_id> is null";
-        assert message_content != null : "<message_content> is null";
+        assert message_id != null : "<message_id> is null";
 
-        this.username_id = username_id;
-        this.message_content = message_content;
+        this.message_id = message_id;
+        if (conversation == null) {
+            this.conversation = null;
+        } else {
+            this.conversation = List.copyOf(conversation);
+        }
     }
 
-    @JsonProperty(JSON__USERNAME__ID)
-    public @NonNull String username_id() {
-        return Objects.requireNonNull(username_id);
+    @JsonProperty(JSON__MESSAGE__ID)
+    public @Nonnull String message_id() {
+        return Objects.requireNonNull(message_id);
     }
 
-    @JsonProperty(JSON__USERNAME__MESSAGE_LIST)
-    public @NonNull String message_content() {
-        return Objects.requireNonNull(message_content);
+    @JsonIgnore
+    public @Nullable UserPOJO user_id() {
+        return user_id;
+    }
+
+    @JsonProperty(JSON__CONVERSATION)
+    public @Nullable List<UserConversationPOJO> conversation() {
+        return conversation;
     }
 
     @Override
-    public @NonNull String toString() {
+    public @Nullable String toString() {
+
         return new ToStringCreator(this)
-                .append(JSON__USERNAME__ID, username_id())
-                .append(JSON__USERNAME__MESSAGE_LIST, message_content())
+                .append(JSON__MESSAGE__ID, message_id())
+                .append(JSON__CONVERSATION, conversation())
                 .toString();
     }
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

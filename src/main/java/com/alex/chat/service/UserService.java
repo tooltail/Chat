@@ -8,12 +8,9 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    public static String USER__ID;
 
-    public @Nonnull String nextUserId() {
+    public static @Nonnull String nextId() {
 
-        this.USER__ID = UUID.randomUUID().toString();
-
-        return USER__ID;
+        return UUID.randomUUID().toString();
     }
 }

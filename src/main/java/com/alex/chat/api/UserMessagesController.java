@@ -1,5 +1,5 @@
 package com.alex.chat.api;
-
+/*
 import com.alex.chat.dao.UserMessagesDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping(path = "/api/message")
@@ -45,3 +46,4 @@ public class UserMessagesController {
         return ResponseEntity.ok(response);
     }
 }
+*/

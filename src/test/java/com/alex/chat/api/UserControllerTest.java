@@ -1,9 +1,7 @@
 package com.alex.chat.api;
 
-import com.alex.chat.dao.repository.UserMessagesRepository;
+import com.alex.chat.dao.repository.UserMessageRepository;
 import com.alex.chat.dao.repository.UserRepository;
-import com.alex.chat.data.UserMessagesPOJO;
-import com.alex.chat.data.UserPOJO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.awaitility.Awaitility;
 import org.junit.Test;
@@ -19,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,7 +32,7 @@ public class UserControllerTest {
     @Autowired private UserRepository userRepository;
     @Autowired private MockMvc mvc;
     @Autowired private ObjectMapper jsonMapper;
-    @Autowired private UserMessagesRepository userMessagesRepository;
+    @Autowired private UserMessageRepository userMessagesRepository;
 
     private static final String USERNAME = "usernameExample";
     private static final String PASSWORD = "passwordExample";
