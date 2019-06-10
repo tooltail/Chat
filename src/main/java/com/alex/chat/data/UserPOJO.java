@@ -8,100 +8,77 @@ import org.springframework.data.annotation.Immutable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
-@Immutable
 @Entity
 @Table(name = UserPOJO.DB__TABLE)
 public class UserPOJO {
 
-    // table name
     static final String DB__TABLE                  = "user";
 
-    // user id
-    public static final String DB__ID              = "id";
-    // user name
+    public static final String DB__PK__ID          = "id";
     static final String DB__USER                   = "user";
-    // user password
     static final String DB__PASSWORD               = "password";
-    // id all messages
-    static final String DB__MESSAGE__ID            = "message_id";
+    static final String DB__MESSAGES               = "messages";
 
-    static final String JSON__ID                   = DB__ID;
+    static final String JSON__ID                   = DB__PK__ID;
     static final String JSON__USER                 = DB__USER;
     static final String JSON__PASSWORD             = DB__PASSWORD;
-    static final String JSON__MESSAGE__ID          = DB__MESSAGE__ID;
+    static final String JSON__MESSAGES             = DB__MESSAGES;
 
-    // Create with UUID creator
     @Id
-    @Column(name = DB__ID, unique = true, nullable = false)
-    @Nullable private volatile String id;
+    @Column(name = DB__PK__ID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Nullable private Integer id;
 
-    @Column(name = DB__USER, nullable = false)
-    @Nullable private volatile String user;
+    @Column(name = DB__USER)
+    @Nullable private String user;
 
-    @Column(name = DB__PASSWORD, nullable = false)
-    @Nullable private volatile String password;
+    @Column(name = DB__PASSWORD)
+    @Nullable private String password;
 
-    // no need to create column
-    //@Column(name = DB__MESSAGE__ID, nullable = false)
-    @OneToMany(targetEntity = UserMessagePOJO.class, mappedBy = UserMessagePOJO.DB__USER__ID)
-    @Nullable private volatile List<UserMessagePOJO> message_id;
+    @OneToMany(mappedBy = UserMessagePOJO.DB__FK__USER, cascade = CascadeType.ALL)
+    @Nullable private Set<UserMessagePOJO> messages;
 
 
     protected UserPOJO() {}
 
     @JsonCreator
     public UserPOJO(
-            @JsonProperty(JSON__ID) @Nonnull String id,
-            @JsonProperty(JSON__USER) @Nonnull String user,
-            @JsonProperty(JSON__PASSWORD) @Nonnull String password,
-            @JsonProperty(JSON__MESSAGE__ID) @Nonnull List<UserMessagePOJO> message_id) {
+            //@JsonProperty(JSON__ID) @Nullable String id,
+            @JsonProperty(JSON__USER) @Nullable String user,
+            @JsonProperty(JSON__PASSWORD) @Nullable String password)
+            //@JsonProperty(JSON__MESSAGES) @Nullable List<UserMessagePOJO> messages)
+            {
 
-        assert id != null : "<id> is null";
-        assert user != null : "<user> is null";
-        assert password != null : "<password> is null";
-        assert message_id != null : "<message_id> is null";
 
-        this.id = id;
+        //this.id = id;
         this.user = user;
         this.password = password;
-        this.message_id = List.copyOf(message_id);
+       // this.messages = List.copyOf(messages);
     }
 
-    @JsonProperty(JSON__ID)
-    public @Nonnull String id() {
-        return Objects.requireNonNull(id);
+    public void setMessages(UserMessagePOJO message) {
+        Set<UserMessagePOJO> userMessagePOJOS = new HashSet<>();
+        userMessagePOJOS.add(message);
+        this.messages = userMessagePOJOS;
+        message.setUser(this);
     }
 
-    @JsonProperty(JSON__USER)
-    public @Nonnull String user() {
-        return Objects.requireNonNull(user);
-    }
-
-    @JsonProperty(JSON__PASSWORD)
-    public @Nonnull String password() {
-        return Objects.requireNonNull(password);
-    }
-
-    @JsonProperty(JSON__MESSAGE__ID)
-    public @Nonnull List<UserMessagePOJO> message_id() {
-        return Objects.requireNonNull(message_id);
-    }
-
-    @Override
-    public @Nonnull String toString() {
-
-        return new ToStringCreator(this)
-                .append(JSON__ID, id())
-                .append(JSON__USER, user())
-                .append(JSON__PASSWORD, password())
-                .append(JSON__MESSAGE__ID, message_id())
-                .toString();
-    }
-
+    //    public void addMessage(UserMessagePOJO userMessage) {
+//
+//        this.messages.add(userMessage);
+//        userMessage.setUser(this);
+//        }
+//
+//
+//    public Set<UserMessagePOJO> getMessages() {
+//        return messages;
+//    }
 
 }
 

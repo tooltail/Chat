@@ -17,37 +17,37 @@ import java.util.Map;
 public class UserController {
 
     @Nonnull private final UserDAO userDAO;
-    @Nonnull private final UserService userSevice;
+    @Nonnull private final UserService userService;
 
     public UserController(
             @Nullable @Autowired UserDAO userDAO,
-            @Nullable @Autowired UserService userSevice) {
+            @Nullable @Autowired UserService userService) {
 
         this.userDAO = userDAO;
-        this.userSevice = userSevice;
+        this.userService = userService;
     }
 
     /**
      *
-     * @param username
+     * @param user
      * @param password
      * @return user id
      */
     @PostMapping(path = "/addUser",
                  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody @Nonnull ResponseEntity<Map<String, String>> addUser(
-            @RequestParam(name = "username", required = true) @Nonnull String username,
+            @RequestParam(name = "user", required = true) @Nonnull String user,
             @RequestParam(name = "password", required = true) @Nonnull String password) {
 
 
-        assert username != null : "<username> is null";
+        assert user != null : "<user> is null";
         assert password != null : "<password> is null";
 
-        String userId = userSevice.nextId();
+        String userId = userService.nextId();
 
-        userDAO.addUser(userId, username, password);
+        userDAO.addUser(userId, user, password);
 
         return ResponseEntity.ok(
-                Map.of(UserPOJO.DB__ID, userId));
+                Map.of(UserPOJO.DB__PK__ID, userId));
     }
 }

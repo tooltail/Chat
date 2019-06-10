@@ -34,7 +34,7 @@ public class UserControllerTest {
     @Autowired private ObjectMapper jsonMapper;
     @Autowired private UserMessageRepository userMessagesRepository;
 
-    private static final String USERNAME = "usernameExample";
+    private static final String USER = "userExample";
     private static final String PASSWORD = "passwordExample";
 
     // static id
@@ -49,7 +49,7 @@ public class UserControllerTest {
 
         String jsonResp =
                 mvc.perform(post("/api/user/addUser")
-                        .param("username", Objects.toString(USERNAME, ""))
+                        .param("user", Objects.toString(USER, ""))
                         .param("password", Objects.toString(PASSWORD, ""))
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -66,10 +66,10 @@ public class UserControllerTest {
 
 
         Awaitility.await()
-                .timeout(20, TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(
-                        () -> userRepository.findById(userId).orElse(null),
+                        () -> userMessagesRepository.findById(1).orElse(null),
                         Objects::nonNull);
 
     }
@@ -92,10 +92,10 @@ public class UserControllerTest {
 
 
         Awaitility.await()
-                .timeout(20, TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(
-                        () -> userMessagesRepository.findById(STATIC__ID).orElse(null),
+                        () -> userMessagesRepository.findById(12).orElse(null),
                         Objects::nonNull);
 
     }

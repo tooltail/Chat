@@ -2,7 +2,7 @@ package com.alex.chat.dao;
 
 
 import com.alex.chat.dao.repository.UserMessageRepository;
-import com.alex.chat.data.UserConversationPOJO;
+//import com.alex.chat.data.UserConversationPOJO;
 import com.alex.chat.data.UserMessagePOJO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

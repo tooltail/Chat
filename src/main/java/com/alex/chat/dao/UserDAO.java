@@ -1,7 +1,7 @@
 package com.alex.chat.dao;
 
+import com.alex.chat.dao.repository.UserMessageRepository;
 import com.alex.chat.dao.repository.UserRepository;
-import com.alex.chat.data.UserConversationPOJO;
 import com.alex.chat.data.UserMessagePOJO;
 import com.alex.chat.data.UserPOJO;
 import com.alex.chat.service.UserService;
@@ -13,50 +13,60 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Repository
 public class UserDAO {
 
-    private final Logger LOG                                 = LoggerFactory.getLogger(UserDAO.class);
+    private final Logger LOG                                      = LoggerFactory.getLogger(UserDAO.class);
 
     private static final String MSG__ADD                          = "ADD {}";
 
     @Nonnull private final UserRepository userRepository;
     @Nonnull private final UserService userService;
+    @Nonnull private final UserMessageRepository userMessageRepository;
 
     public UserDAO(
             @Nullable @Autowired UserRepository userRepository,
-            @Nullable @Autowired UserService userService) {
+            @Nullable @Autowired UserService userService,
+            @Nullable @Autowired UserMessageRepository userMessageRepository) {
 
         this.userRepository = userRepository;
         this.userService = userService;
+        this.userMessageRepository = userMessageRepository;
     }
 
     @Async
-    public @Nonnull CompletableFuture<UserPOJO> addUser(
+    public @Nullable CompletableFuture<Void> addUser(
             @Nonnull String id,
-            @Nonnull String username,
+            @Nonnull String user,
             @Nonnull String password) {
 
         assert id != null : "<id> is null";
-        assert username != null : "<username> is null";
+        assert user != null : "<user> is null";
         assert password != null : "<password> is null";
 
-        List<UserConversationPOJO> conversation = new ArrayList<>();
-        conversation.add(new UserConversationPOJO(userService.nextId(), null, null));
+        UserPOJO userPOJO = userRepository.findById(3).get();
+        UserMessagePOJO userMessagePOJO= new UserMessagePOJO("eeeeexxxx");
 
-        List<UserMessagePOJO> messages = new ArrayList<>();
-        messages.add(new UserMessagePOJO(userService.nextId(), conversation));
+        userPOJO.setMessages(userMessagePOJO);
 
-        UserPOJO user = new UserPOJO(id, username, password, messages);
-        userRepository.save(user);
+        userRepository.save(userPOJO);
+
+
+
+//        UserMessagePOJO userMessagePOJO = new UserMessagePOJO("exampleMessage");
+//
+//        UserPOJO userPOJO = userRepository.findById(1).get();
+//        userPOJO.addMessage(userMessagePOJO);
+//        userMessageRepository.save(userMessagePOJO);
+
+        //userRepository.save(userPOJO);
 
         LOG.info(
                 MSG__ADD,
-                user);
+                userPOJO);
 
         return CompletableFuture.completedFuture(null);
     }
