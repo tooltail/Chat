@@ -35,19 +35,18 @@ public class UserController {
      */
     @PostMapping(path = "/addUser",
                  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody @Nonnull ResponseEntity<Map<String, String>> addUser(
-            @RequestParam(name = "user", required = true) @Nonnull String user,
-            @RequestParam(name = "password", required = true) @Nonnull String password) {
+    public @ResponseBody @Nonnull ResponseEntity<Map<String, Integer>> addUser(
+            @RequestParam(name = "user") @Nonnull String user,
+            @RequestParam(name = "password") @Nonnull String password) {
 
 
         assert user != null : "<user> is null";
         assert password != null : "<password> is null";
 
-        String userId = userService.nextId();
 
-        userDAO.addUser(userId, user, password);
+        userDAO.addUser(user, password);
 
         return ResponseEntity.ok(
-                Map.of(UserPOJO.DB__PK__ID, userId));
+                Map.of(UserPOJO.DB__PK__ID, 1));
     }
 }

@@ -10,8 +10,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -38,31 +40,11 @@ public class UserMessagePOJO {
     @JoinColumn(name = DB__USER__ID)
     @Nullable protected UserPOJO user;
 
-    @Column(name = "example")
-    @Nullable private String example;
+    @OneToMany(mappedBy = UserConversationPOJO.DB__FK__MESSAGE, cascade = CascadeType.ALL)
+    @Nullable private Set<UserConversationPOJO> conversation = new HashSet<>();
 
+    public UserMessagePOJO() {}
 
-    //@OneToMany(mappedBy = UserConversationPOJO.DB__FK__MESSAGE)
-    //@Nullable private volatile List<UserConversationPOJO> conversation;
-
-    protected UserMessagePOJO() {}
-
-    //@JsonCreator
-    public UserMessagePOJO(
-            //@JsonProperty(JSON__MESSAGE__ID) @Nullable Long id,
-            String example)
-            //@JsonProperty(JSON__CONVERSATION) @Nullable List<UserConversationPOJO> conversation)
-    {
-
-        this.example = example;
-        //this.id = id;
-
-//        if (conversation == null) {
-//            this.conversation = null;
-//        } else {
-//            this.conversation = List.copyOf(conversation);
-//        }
-    }
 
     public UserPOJO getUser() {
         return user;
@@ -70,6 +52,13 @@ public class UserMessagePOJO {
 
     public void setUser(UserPOJO user) {
         this.user = user;
+    }
+
+    public void addConversation(UserConversationPOJO userConversationPOJO) {
+        //Set<UserConversationPOJO> userConversationPOJOS = new HashSet<>();
+        //userConversationPOJOS.add(userConversationPOJO);
+        this.conversation.add(userConversationPOJO);
+        userConversationPOJO.setMessage(this);
     }
 
 }

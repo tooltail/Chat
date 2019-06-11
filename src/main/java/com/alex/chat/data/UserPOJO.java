@@ -49,36 +49,19 @@ public class UserPOJO {
 
     @JsonCreator
     public UserPOJO(
-            //@JsonProperty(JSON__ID) @Nullable String id,
             @JsonProperty(JSON__USER) @Nullable String user,
-            @JsonProperty(JSON__PASSWORD) @Nullable String password)
-            //@JsonProperty(JSON__MESSAGES) @Nullable List<UserMessagePOJO> messages)
-            {
+            @JsonProperty(JSON__PASSWORD) @Nullable String password) {
 
-
-        //this.id = id;
         this.user = user;
         this.password = password;
-       // this.messages = List.copyOf(messages);
     }
 
-    public void setMessages(UserMessagePOJO message) {
+    public void addMessages(UserMessagePOJO message) {
         Set<UserMessagePOJO> userMessagePOJOS = new HashSet<>();
         userMessagePOJOS.add(message);
         this.messages = userMessagePOJOS;
         message.setUser(this);
     }
-
-    //    public void addMessage(UserMessagePOJO userMessage) {
-//
-//        this.messages.add(userMessage);
-//        userMessage.setUser(this);
-//        }
-//
-//
-//    public Set<UserMessagePOJO> getMessages() {
-//        return messages;
-//    }
 
 }
 

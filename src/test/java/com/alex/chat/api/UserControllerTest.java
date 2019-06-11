@@ -1,5 +1,6 @@
 package com.alex.chat.api;
 
+import com.alex.chat.dao.repository.UserConversationRepository;
 import com.alex.chat.dao.repository.UserMessageRepository;
 import com.alex.chat.dao.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +16,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -32,44 +32,38 @@ public class UserControllerTest {
     @Autowired private UserRepository userRepository;
     @Autowired private MockMvc mvc;
     @Autowired private ObjectMapper jsonMapper;
-    @Autowired private UserMessageRepository userMessagesRepository;
+    @Autowired private UserMessageRepository userMessageRepository;
+    @Autowired private UserConversationRepository userConversationRepository;
 
     private static final String USER = "userExample";
     private static final String PASSWORD = "passwordExample";
 
-    // static id
-    private static String STATIC__ID;
-    private static final String STATIC__RECEIVER__ID = "7d6b80dc-fd1b-4b5f-a1da-a1f06158a44b";
     private static final String STATIC__MESSAGE__CONTENT = "hello everyone!!";
 
     @Test
     @DirtiesContext
     public void addUserTest() throws Exception {
 
-
-        String jsonResp =
                 mvc.perform(post("/api/user/addUser")
                         .param("user", Objects.toString(USER, ""))
                         .param("password", Objects.toString(PASSWORD, ""))
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        String userId = (String) Objects.requireNonNull(
-              jsonMapper.readValue(jsonResp, Map.class)
-                        .get("id"));
-
-        this.STATIC__ID = userId;
+                mvc.perform(post("/api/user/addUser")
+                        .param("user", Objects.toString(USER, ""))
+                        .param("password", Objects.toString(PASSWORD, ""))
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
 
         Awaitility.await()
                 .timeout(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(
-                        () -> userMessagesRepository.findById(1).orElse(null),
+                        () -> userRepository.findById(2).orElse(null),
                         Objects::nonNull);
 
     }
@@ -78,26 +72,43 @@ public class UserControllerTest {
     @DirtiesContext
     public void addMessageTest() throws Exception {
 
-        String jsonResp =
                 mvc.perform(post("/api/message/addMessage")
-                        .param("username_id", STATIC__ID)
-                        .param("receiver_id", STATIC__RECEIVER__ID)
+                        .param("user_id", "1")
+                        .param("receiver_id", "2")
                         .param("message_content", STATIC__MESSAGE__CONTENT)
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        Awaitility.await()
+                .timeout(10, TimeUnit.SECONDS)
+                .pollInterval(1, TimeUnit.SECONDS)
+                .until(
+                        () -> userMessageRepository.findById(2).orElse(null),
+                        Objects::nonNull);
+
+    }
+
+    @Test
+    @DirtiesContext
+    public void addConversationTest() throws Exception {
+
+                mvc.perform(post("/api/replica/addReplica")
+                .param("user_id", "1")
+                .param("receiver_id", "2")
+                .param("message_content", "Another message")
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
 
         Awaitility.await()
                 .timeout(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until(
-                        () -> userMessagesRepository.findById(12).orElse(null),
-                        Objects::nonNull);
-
+                        () -> userConversationRepository.findById(4).orElse(null),
+                        Objects::nonNull
+                );
     }
 
 
