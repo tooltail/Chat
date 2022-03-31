@@ -27,7 +27,7 @@
         <app.mainClass>com.alex.chat.App</app.mainClass>
         <app.version>${maven.build.timestamp}-SNAPSHOT</app.version>
 
-        <version.spring.boot>2.1.4.RELEASE</version.spring.boot>
+        <version.spring.boot>2.5.12</version.spring.boot>
         <version.awaitility>3.1.6</version.awaitility>
 
     </properties>
